@@ -52,3 +52,16 @@ def write_meta(transcripts, savepath):
 
 	with open(savepath, 'w') as f:
 		f.writelines(transcripts)
+
+def run_mfa(wav_lab_path, dict_path, save_textgrid_path, use_pretrained_g2p=True):
+	if use_pretrained_g2p:
+		print("\n[LOG] start to generate dictionary..")
+		os.system("mfa g2p  english_us_arpa {} {}".format(wav_lab_path, dict_path))
+
+	print("\n[LOG] validate (wav, lab) format and generated dictionary..")
+	os.system("mfa validate {} {}".format(wav_lab_path, dict_path))		# validate wavlab and generated dictionary
+
+	print("\n[LOG] start train forced aligner..")
+	os.system("mfa train {} {} {}".format(wav_lab_path, dict_path, save_textgrid_path))
+
+

@@ -1,17 +1,21 @@
-from utils import do_multiprocessing, get_filelist, copy_file, read_meta, write_meta, create_dir
+from utils import do_multiprocessing, get_filelist, copy_file, read_meta, write_meta, create_dir, run_mfa
 
 import os, itertools, sys
 
 class EmotionalSpeechDataset():
 
-	def __init__(self, dataset_path, preprocessed_file_dir, language='english'):
+	def __init__(self, dataset_path, preprocessed_file_dir, result_dir, language='english'):
 
+		self.result_dir = result_dir
 		self.dataset_path = dataset_path
-		dataset_name = dataset_path.split("/")[-1]
+		self.dataset_name = dataset_path.split("/")[-1]
 		self.preprocessed_file_dir = preprocessed_file_dir
 
-		create_dir(preprocessed_file_dir)
-		self.preprocessed_file_dir = create_dir(os.path.join(preprocessed_file_dir, dataset_name))
+		create_dir(self.result_dir)
+		create_dir(self.preprocessed_file_dir)
+
+		self.preprocessed_file_dir = create_dir(os.path.join(preprocessed_file_dir, self.dataset_name))
+		self.result_dir = create_dir(os.path.join(result_dir, self.dataset_name))
 
 		self.emotions = ["Angry", "Happy", "Neutral", "Sad", "Surprise"]
 
@@ -72,4 +76,10 @@ class EmotionalSpeechDataset():
 		file_infos = list(zip(wav_filelist, transcripts, save_dirs))
 
 		do_multiprocessing(job=self.job, tasklist=file_infos)
+	
+		dictionary_path = os.path.join(self.result_dir, "{}_dictionary.txt".format(self.dataset_name))
+		textgrid_path = os.path.join(self.result_dir, "TextGrid")
+
+		run_mfa(self.preprocessed_file_dir+"/", dictionary_path, textgrid_path)
+
 
