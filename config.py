@@ -9,3 +9,5 @@ class Arguments:
 	preprocessed_file_dir = "./preprocessed"	
 
 	result_dir = "./result"
+
+	num_jobs=8

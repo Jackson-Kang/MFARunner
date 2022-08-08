@@ -4,12 +4,14 @@ import os, itertools, sys
 
 class EmotionalSpeechDataset():
 
-	def __init__(self, dataset_path, preprocessed_file_dir, result_dir, language='english'):
+	def __init__(self, dataset_path, preprocessed_file_dir, result_dir, language='english', num_jobs=8):
 
 		self.result_dir = result_dir
 		self.dataset_path = dataset_path
 		self.dataset_name = dataset_path.split("/")[-1]
 		self.preprocessed_file_dir = preprocessed_file_dir
+
+		self.num_jobs = num_jobs
 
 		create_dir(self.result_dir)
 		create_dir(self.preprocessed_file_dir)
@@ -44,6 +46,11 @@ class EmotionalSpeechDataset():
 			print("\t\t transcript_filename: {} vs. wav-filename: {}".format(transcript_filename, filename))		
 			sys.exit(0)
 			return
+
+		if transcript[0] != " ":
+			transcript = " " + transcript
+		if transcript[-1] != " ":
+			transcript = transcript + " "
 
 		wav_savepath = os.path.join(save_dir, filename)
 		transcript_savepath = os.path.join(save_dir, filename.replace(".wav", ".lab"))
@@ -80,6 +87,5 @@ class EmotionalSpeechDataset():
 		dictionary_path = os.path.join(self.result_dir, "{}_dictionary.txt".format(self.dataset_name))
 		textgrid_path = os.path.join(self.result_dir, "TextGrid")
 
-		run_mfa(self.preprocessed_file_dir+"/", dictionary_path, textgrid_path)
-
+		run_mfa(self.preprocessed_file_dir+"/", dictionary_path, textgrid_path, num_jobs=self.num_jobs)
 
