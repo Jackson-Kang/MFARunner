@@ -82,8 +82,8 @@ class EmotionalSpeechDataset():
 
 		file_infos = list(zip(wav_filelist, transcripts, save_dirs))
 
-		do_multiprocessing(job=self.job, tasklist=file_infos)
-	
+		do_multiprocessing(job=self.job, tasklist=file_infos, num_jobs=self.num_jobs)	
+
 		dictionary_path = os.path.join(self.result_dir, "{}_dictionary.txt".format(self.dataset_name))
 		textgrid_path = os.path.join(self.result_dir, "TextGrid")
 

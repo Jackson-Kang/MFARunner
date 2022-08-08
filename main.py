@@ -10,7 +10,7 @@ def run():
 	num_jobs = args.num_jobs
 
 	if "esd" in dataset_path.lower():
-		instance = esd.EmotionalSpeechDataset(dataset_path, preprocessed_file_dir, result_dir, num_jobs)
+		instance = esd.EmotionalSpeechDataset(dataset_path, preprocessed_file_dir, result_dir, num_jobs=num_jobs)
 	else:
 		print("[ERROR] No dataset named {}.".format(dataset_name.split("/")[-1]))
 		return
