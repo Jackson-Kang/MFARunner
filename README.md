@@ -32,7 +32,7 @@ Please refer [visualise_alignment.ipynb](https://github.com/Jackson-Kang/MFAForm
 
 # Experimental Notes
 * currently, only supports ESD
-* Since MFA use GMM, different emotions belonging to a single speaker were considered independently. (i.e., utterances with emotion 'Angry' from speaker A and utterances with emotion 'Sad' are treated with different speakers.)
+* Different emotions belonging to a single speaker were considered independently. (i.e., utterances with emotion 'Angry' and utterances with emotion 'Sad' from same speaker are treated with different speakers.)
 * Please note that extracted alignments may not be accurate.
 * Only English speakers are used.
 
