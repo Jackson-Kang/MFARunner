@@ -8,7 +8,7 @@ These days, as speech research community rapidly grows, text-wav forced alignmen
 * Generate phoneme dictionary from [pretranied G2P model](https://mfa-models.readthedocs.io/en/latest/g2p/English/English%20%28US%29%20ARPA%20G2P%20model%20v2_0_0.html#English%20(US)%20ARPA%20G2P%20model%20v2_0_0) provided from [official MFA documents](https://mfa-models.readthedocs.io/en/latest/g2p/index.html#g2p)
 * Train MFA using pre-formatted (wav-lab) paired dataset and generated phoneme dictionary
 * Validate and visualize the extracted TextGrid(alignment) via [jupyter notebook](https://github.com/Jackson-Kang/MFAFormatter/blob/main/visualize_alignment.ipynb)
-* Provide the text-wav alignment from [Emotional Speech Dataset (ESD) [Zhou21]](https://arxiv.org/abs/2105.14762) 
+* Provide the text-wav alignment retrieved from [Emotional Speech Dataset (ESD) [Zhou21]](https://arxiv.org/abs/2105.14762) 
 
 # How to use
 To run this program, please follow the procedure below.
