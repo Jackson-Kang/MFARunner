@@ -37,7 +37,6 @@ Please refer [visualise_alignment.ipynb](https://github.com/Jackson-Kang/MFAForm
 * Only English speakers are used.
 
 # Contacts
-Please email to mskang1478@gmail.com. Any suggestion or question is appreciate. 
-
+Please email to mskang1478@gmail.com. Any suggestion or question be appreciated. 
 
 
