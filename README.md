@@ -1,5 +1,5 @@
 
-# MFA Formatter for Beginners
+# MFA Runner for Beginners
 A simple tool to easily use Montreal Forced Aligner.
 
 # Description
