@@ -4,13 +4,13 @@ import os, itertools, sys
 
 class EmotionalSpeechDataset():
 
-	def __init__(self, dataset_path, preprocessed_file_dir, result_dir, language='english', num_jobs=8):
+	def __init__(self, dataset_path, preprocessed_file_dir, result_dir, language='english', num_jobs=8, phone_set=None):
 
 		self.result_dir = result_dir
 		self.dataset_path = dataset_path
 		self.dataset_name = dataset_path.split("/")[-1]
 		self.preprocessed_file_dir = preprocessed_file_dir
-
+		self.phone_set = phone_set
 		self.num_jobs = num_jobs
 
 		create_dir(self.result_dir)
@@ -87,5 +87,5 @@ class EmotionalSpeechDataset():
 		dictionary_path = os.path.join(self.result_dir, "{}_dictionary.txt".format(self.dataset_name))
 		textgrid_path = os.path.join(self.result_dir, "TextGrid")
 
-		run_mfa(self.preprocessed_file_dir+"/", dictionary_path, textgrid_path, num_jobs=self.num_jobs)
+		run_mfa(self.preprocessed_file_dir+"/", dictionary_path, textgrid_path, num_jobs=self.num_jobs, phone_set=self.phone_set)
 

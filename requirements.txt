@@ -1,3 +1,7 @@
 chardet==5.0.0
 jupyter==1.0.0
 tgt==1.4.4
+tqdm==4.64.1
+matplotlib==3.6.2
+jamo==0.4.1
+g2pk==0.9.4

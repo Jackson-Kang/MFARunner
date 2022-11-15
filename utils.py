@@ -1,6 +1,7 @@
 from multiprocessing import Pool
 from tqdm import tqdm
 from glob import glob
+from jamo import h2j, j2hcj
 
 import matplotlib
 matplotlib.use('pdf')
@@ -8,7 +9,10 @@ matplotlib.use('pdf')
 import matplotlib.pyplot as plt
 import numpy as np
 import os, chardet
-import tgt
+import tgt, re
+from konlpy.tag import Mecab
+
+mecab = Mecab()
 
 def copy_file(source_file, dest_file):
 	os.system("cp {} {}".format(source_file, dest_file))
@@ -32,9 +36,9 @@ def create_dir(*args):
                 os.mkdir(path)
         return path
 
-def read_meta(path):
+def read_meta(path, encoding='utf-8'):
 	try: 
-		with open(path, 'r', encoding='utf-8') as f:
+		with open(path, 'r', encoding=encoding) as f:
 			lines = f.readlines()
 	except:
 		rawdata = open(path, "rb").read()
@@ -45,6 +49,31 @@ def read_meta(path):
 	lines = [line.lstrip().rstrip() for line in lines if line not in ["\n", "\t", " ", "\t\n"]]
 
 	return lines
+
+def remove_special_symbols(transcripts):
+
+	transcripts = "@".join(transcripts)
+	transcripts = re.sub("[$!#,.\"\'?;:~<>]", "", transcripts)
+	return transcripts.split("@")
+
+
+def get_korean_dictionary(transcripts, g2p):
+
+	pronunciation_dict = []
+
+	print("[LOG] Generate dictionary..")
+	for transcript in tqdm(transcripts, total=len(transcripts)):
+		word_list = transcript.rstrip().split(" ")
+		word_p_list = g2p(transcript.rstrip()).split(" ")
+
+		for word, word_p in list(zip(word_list, word_p_list)):
+			word_p = " ".join(list(j2hcj(h2j(word_p))))
+			line = "{}\t{}\n".format(word, word_p)
+			if word not in pronunciation_dict:
+				pronunciation_dict.append(line)
+
+	return pronunciation_dict
+
 
 
 def write_meta(transcripts, savepath):
@@ -58,13 +87,13 @@ def write_meta(transcripts, savepath):
 	with open(savepath, 'w') as f:
 		f.writelines(transcripts)
 
-def run_mfa(wav_lab_path, dict_path, save_textgrid_path, use_pretrained_g2p=True, num_jobs=8):
+def run_mfa(wav_lab_path, dict_path, save_textgrid_path, phone_set=None, num_jobs=8):
 
 	os.system("mfa configure --always_clean --disable_textgrid_cleanup --j {}".format(num_jobs))
 
-	if use_pretrained_g2p:
+	if phone_set:
 		print("\n[LOG] start to generate dictionary..")
-		os.system("mfa g2p  english_us_arpa {} {} --j {}".format(wav_lab_path, dict_path, num_jobs))
+		os.system("mfa g2p  {} {} {} --j {}".format(phone_set, wav_lab_path, dict_path, num_jobs))
 
 
 	print("\n[LOG] validate (wav, lab) format and generated dictionary..")
