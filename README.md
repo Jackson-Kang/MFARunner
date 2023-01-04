@@ -28,15 +28,19 @@ As a result of this tutorial, I upload text-wav alignment extracted using MFA.
 Please refer [visualise_alignment.ipynb](https://github.com/Jackson-Kang/MFAFormatter/blob/main/visualize_alignment.ipynb).
 
 # Supported Dataset
-* [Emotional Speech Dataset (ESD) [Zhou21]](https://arxiv.org/abs/2105.14762) - a multispeaker-multiemotion dataset
+* [Emotional Speech Dataset (ESD) [Zhou21]](https://arxiv.org/abs/2105.14762) - an English multispeaker-multiemotion dataset
+* [[Korean Single Speaker Dataset] (KSS)](https://www.kaggle.com/bryanpark/korean-single-speaker-speech-dataset) - a Korean single female speaker dataset
+* [감정 음성합성 데이터셋(Korean Emotional Speech dataset)](https://aihub.or.kr/aihubdata/data/view.do?currMenu=115&topMenu=100) - a Korean single speaker multi-emotion dataset
+* [EmotionTTS OpenDB](https://github.com/emotiontts/emotiontts_open_db/tree/master/Dataset/SpeechCorpus) - a multipurpose dataset (in this repos, only consider multispeaker-multiemotion dataset)
+
 
 # Experimental Notes
 * currently, only supports ESD
-* Different emotions belonging to a single speaker were considered independently. (i.e., utterances with emotion 'Angry' and utterances with emotion 'Sad' from same speaker are treated with different speakers.)
+* Different emotions belonging to a single speaker are considered independently. (i.e., utterances with emotion 'Angry' and utterances with emotion 'Sad' from same speaker are treated with different speakers.) This is a simple "remedy" to reduce complexity of style(emotion) distribution.  
 * Please note that extracted alignments may not be accurate.
-* Only English speakers are used.
+* Regarding ESD dataset, only English speakers are used.
 
 # Contacts
 Please email to mskang1478@gmail.com. Any suggestion or question be appreciated. 
-
+Hope that this repository be helpful.
 
