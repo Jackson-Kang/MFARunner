@@ -1,7 +1,7 @@
 from multiprocessing import Pool
 from tqdm import tqdm
 from glob import glob
-from jamo import h2j, j2hcj
+from jamo import hangul_to_jamo
 
 import matplotlib
 matplotlib.use('pdf')
@@ -67,7 +67,7 @@ def get_korean_dictionary(transcripts, g2p):
 		word_p_list = g2p(transcript.rstrip()).split(" ")
 
 		for word, word_p in list(zip(word_list, word_p_list)):
-			word_p = " ".join(list(j2hcj(h2j(word_p))))
+			word_p = " ".join(list(hangul_to_jamo(word_p)))
 			line = "{}\t{}\n".format(word, word_p)
 			if word not in pronunciation_dict:
 				pronunciation_dict.append(line)
