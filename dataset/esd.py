@@ -1,5 +1,5 @@
-from utils import do_multiprocessing, get_filelist, copy_file, read_meta, write_meta, create_dir, run_mfa
-
+from utils import do_multiprocessing, get_filelist, copy_file, read_meta, write_meta, create_dir, run_mfa, get_english_dictionary
+from g2p_en import G2p
 import os, itertools, sys
 
 class EmotionalSpeechDataset():
@@ -60,6 +60,8 @@ class EmotionalSpeechDataset():
 
 
 	def run(self):
+				
+		g2p = G2p()
 
 		wav_filepaths = get_filelist(os.path.join(self.dataset_path, "**", "**", "**"), file_format="wav")
 		wav_filepaths = [(wav_filepath.split("/")[-1], wav_filepath) for wav_filepath in wav_filepaths]
@@ -72,6 +74,19 @@ class EmotionalSpeechDataset():
 									for speaker_id in self.speaker_ids]
 		transcripts = list(itertools.chain(*transcripts))
 
+		dictionary_transcripts = []
+
+		for transcript in transcripts:
+			if transcript in ["", "\t\n", "\t", "\n"]:			
+				continue
+			if len(transcript.split("\t")) != 3:
+				temp, emotion = transcript.split("\t")
+				transcript_filename, transcript = temp[:11], temp[12:]
+			else:
+				transcript_filename, transcript, emotion = transcript.split("\t")
+			dictionary_transcripts.append(transcript)
+
+		dictionary = get_english_dictionary(dictionary_transcripts, g2p)
 
 		save_dirs = [create_dir(os.path.join(self.preprocessed_file_dir, "{}_{}".format(wav_filepath.split("/")[-4], 
 								wav_filepath.split("/")[-3]))) for wav_filepath in wav_filelist]		
@@ -85,6 +100,8 @@ class EmotionalSpeechDataset():
 		do_multiprocessing(job=self.job, tasklist=file_infos, num_jobs=self.num_jobs)	
 
 		dictionary_path = os.path.join(self.result_dir, "{}_dictionary.txt".format(self.dataset_name))
+		write_meta(dictionary, dictionary_path)
+
 		textgrid_path = os.path.join(self.result_dir, "TextGrid")
 
 		run_mfa(self.preprocessed_file_dir+"/", dictionary_path, textgrid_path, num_jobs=self.num_jobs, phone_set=self.phone_set)

@@ -53,12 +53,11 @@ def read_meta(path, encoding='utf-8'):
 def remove_special_symbols(transcripts):
 
 	transcripts = "@".join(transcripts)
-	transcripts = re.sub("[$!#,.\"\'?;:~<>]", "", transcripts)
+	transcripts = re.sub("[$#\"\';:<>]", "", transcripts)
 	return transcripts.split("@")
 
 
 def get_korean_dictionary(transcripts, g2p):
-
 	pronunciation_dict = []
 
 	print("[LOG] Generate dictionary..")
@@ -68,6 +67,23 @@ def get_korean_dictionary(transcripts, g2p):
 
 		for word, word_p in list(zip(word_list, word_p_list)):
 			word_p = " ".join(list(hangul_to_jamo(word_p)))
+			line = "{}\t{}\n".format(word, word_p)
+			if word not in pronunciation_dict:
+				pronunciation_dict.append(line)
+
+	return pronunciation_dict
+
+
+def get_english_dictionary(transcripts, g2p):
+	pronunciation_dict = []
+
+	print("[LOG] Generate dictionary..")
+	for transcript in tqdm(transcripts, total=len(transcripts)):
+		word_list = transcript.rstrip().split(" ")		
+		word_p_list = [g2p(word) for word in word_list]
+
+		for word, word_p in list(zip(word_list, word_p_list)):
+			word_p = " ".join([phone for phone in word_p if phone != ' '])
 			line = "{}\t{}\n".format(word, word_p)
 			if word not in pronunciation_dict:
 				pronunciation_dict.append(line)
@@ -87,9 +103,12 @@ def write_meta(transcripts, savepath):
 	with open(savepath, 'w') as f:
 		f.writelines(transcripts)
 
-def run_mfa(wav_lab_path, dict_path, save_textgrid_path, phone_set=None, num_jobs=8):
+def run_mfa(wav_lab_path, dict_path, save_textgrid_path, phone_set=None, 
+			num_jobs=8, punctuation="、。।@<>”():;¿¡\&%#*【】…‥「」『』〝〟″⟨⟩♪・‹›«»′$+=",
+			quote_markers="“„”〝〟″「」『』ʻʿ‘′”",
+			word_break_markers="():;¡¿“„”&%#—…‥。【】$+=〝〟″‹›«»・⟨⟩「」『』”"):
 
-	os.system("mfa configure --always_clean --disable_textgrid_cleanup --j {}".format(num_jobs))
+	os.system("mfa configure --always_clean --disable_textgrid_cleanup  --j {}".format(num_jobs))
 
 	if phone_set:
 		print("\n[LOG] start to generate dictionary..")
@@ -97,11 +116,11 @@ def run_mfa(wav_lab_path, dict_path, save_textgrid_path, phone_set=None, num_job
 
 
 	print("\n[LOG] validate (wav, lab) format and generated dictionary..")
-	os.system("mfa validate {} {} --j {}".format(wav_lab_path, dict_path, num_jobs))		# validate wavlab and generated dictionary
+	os.system("mfa validate {} {} --j {} --punctuation \"{}\"".format(wav_lab_path, dict_path, num_jobs, punctuation))		
+	# validate wavlab and generated dictionary
 
 	print("\n[LOG] start train forced aligner..")
-	os.system("mfa train {} {} {} --j {}".format(wav_lab_path, dict_path, save_textgrid_path, num_jobs))
-
+	os.system("mfa train {} {} {} --j {} --punctuation \"{}\"".format(wav_lab_path, dict_path, save_textgrid_path, num_jobs, punctuation))
 
 
 def plot_text_mel_alignment(mel, segmentation_boundary, text_sequence):
@@ -123,7 +142,7 @@ def plot_text_mel_alignment(mel, segmentation_boundary, text_sequence):
 
 	for idx, segment_label in enumerate(segmentation_boundary):
 		plt.text(segment_label, n_mels//2, "{}".format(text_sequence[idx]), color='r', fontsize=10)
-
+    
 
 
 def get_duration_from_textgrid(textgrid_path, sil_phones=['sil', "sp", "spn", ""], sampling_rate=16000, hop_length=256):
